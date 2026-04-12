@@ -1,0 +1,118 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'educadigital/styleano.css' %}">
+
+{% block content %}
+<h1>Quiz de Matemática - 7º ano</h1>
+
+<div id="quiz-container">
+    <p>Carregando perguntas...</p>
+</div>
+
+<button id="finish-quiz-btn" style="margin-top: 20px; padding: 10px 20px;">
+    Finalizar Quiz
+</button>
+
+<div id="quiz-result" style="margin-top: 20px; font-weight: bold;"></div>
+
+
+
+<script>
+    let quizData = [];
+
+    fetch("/educa/api/get-quiz/?category=7Matematica")
+        .then(response => response.json())
+        .then(data => {
+            quizData = data.data;
+            renderQuiz(quizData);
+        })
+        .catch(error => {
+            document.getElementById("quiz-container").innerHTML =
+                "<p>Erro ao carregar o quiz.</p>";
+            console.error(error);
+        });
+
+    function renderQuiz(questions) {
+        const container = document.getElementById("quiz-container");
+        container.innerHTML = "";
+
+        if (!questions || questions.length === 0) {
+            container.innerHTML = "<p>Nenhuma pergunta encontrada.</p>";
+            return;
+        }
+
+        questions.forEach((questionObj, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question-block");
+            questionDiv.style.marginBottom = "25px";
+            questionDiv.style.padding = "15px";
+            questionDiv.style.border = "1px solid #ccc";
+            questionDiv.style.borderRadius = "8px";
+
+            let answersHtml = "";
+
+            questionObj.answers.forEach((answerObj, answerIndex) => {
+                answersHtml += `
+                    <label style="display:block; margin:8px 0;">
+                        <input 
+                            type="radio" 
+                            name="question-${index}" 
+                            value="${answerIndex}"
+                        >
+                        ${answerObj.answer}
+                    </label>
+                `;
+            });
+
+            questionDiv.innerHTML = `
+                <h3>${index + 1}. ${questionObj.question}</h3>
+                <div>${answersHtml}</div>
+                <div id="feedback-${index}" style="margin-top:10px;"></div>
+            `;
+
+            container.appendChild(questionDiv);
+        });
+    }
+
+    document.getElementById("finish-quiz-btn").addEventListener("click", function () {
+        let totalScore = 0;
+        let totalMarks = 0;
+        let totalCorrect = 0;
+
+        quizData.forEach((questionObj, index) => {
+            totalMarks += questionObj.marks;
+
+            const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback-${index}`);
+
+            if (!selectedOption) {
+                feedbackDiv.innerHTML = "<span style='color: orange;'>Você não respondeu esta pergunta.</span>";
+                return;
+            }
+
+            const selectedAnswerIndex = parseInt(selectedOption.value);
+            const selectedAnswer = questionObj.answers[selectedAnswerIndex];
+
+            if (selectedAnswer.is_correct) {
+                totalScore += questionObj.marks;
+                totalCorrect += 1;
+                feedbackDiv.innerHTML = "<span style='color: green;'>Correto ✅</span>";
+            } else {
+                feedbackDiv.innerHTML = "<span style='color: red;'>Errado ❌</span>";
+            }
+        });
+
+        document.getElementById("quiz-result").innerHTML = `
+            Resultado final:<br>
+            Acertos: ${totalCorrect} de ${quizData.length}<br>
+            Pontuação: ${totalScore} de ${totalMarks}
+        `;
+    });
+</script>
+
+<a href="{% url 'educadigital:matematica' %}">
+    <button style="margin-bottom: 20px;">
+        ← Voltar para Matemática
+    </button>
+</a>
+
+{% endblock %}

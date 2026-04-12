@@ -1,0 +1,73 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'Site/style.css' %}">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Professor - Sistema de Gestão Escolar</title>
+</head>
+<body class="bg-background text-foreground">
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="icon">
+                        <!--<img src="{% static 'pagina_web/images/iconprofessor.jpg' %}" alt="Logo"> -->
+                    </div>
+                    <div class="text">
+                        <h1>Área do Professor</h1>
+                        <p>Sistema de Gestão Escolar</p>
+                    </div>
+                </div>
+                <button class="back-button" id="backButton">
+                    <span>&larr; Voltar ao Dashboard</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <section class="welcome">
+                <h2>Bem-vindo, Professor!</h2>
+                <p>Gerencie suas turmas, faça chamadas e organize suas aulas de forma eficiente.</p>
+            </section>
+
+            <!-- Cards Section -->
+            <section class="dashboard">
+                <div class="card" id="attendanceCard">
+                    <h3>Visualizar Chamada</h3>
+                    <p>Faça a chamada dos alunos e registre a presença em tempo real</p>
+                     <a class="action-btn" href="{% url 'chamada:chamada' %}">Acessar</a>
+                </div>
+                <div class="card" id="classesCard">
+                    <h3>Gerenciar Turmas</h3>
+                    <p>Configure e organize suas turmas, horários e alunos</p>
+                     <a class="action-btn" href="{% url 'chamada:turmas' %}">Acessar</a>
+                </div>
+                <div class="card" id="qrcodeCard">
+                    <h3>Gerar QR Code</h3>
+                    <p>Crie QR Codes para check-in automático dos alunos</p>
+                    <a class="action-btn" href="{% url 'chamada:qrcode' %}">Acessar</a>
+                </div>
+                <div class="card" id="qrcodeCard">
+                    <h3>Professor</h3>
+                    <p>Veja a área do professor e suas funcionalidades</p>
+                    <a class="action-btn" href="{% url 'chamada:professor' %}">Acessar</a>
+                </div>
+                <div class="card" id="qrcodeCard">
+                    <h3>Ir para educadigital</h3>
+                    <p>Site de quizzes</p>
+                    <a class="action-btn" href="{% url 'educadigital:home' %}">Acessar</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById("backButton").style.display = "none"; // Esconder o botão de voltar inicialmente
+    </script>
+</body>
+</html>

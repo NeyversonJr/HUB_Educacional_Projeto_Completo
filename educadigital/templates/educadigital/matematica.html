@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema Educacional{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'Site/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #1e3a8a;
+            padding: 12px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR GLOBAL -->
+
+<div class="navbar">
+
+    <!-- Site -->
+
+    <a href="{% url 'Site:index' %}">Home</a>
+    <a href="{% url 'chamada:professor' %}">Professor</a>
+    <a href="{% url 'chamada:chamada' %}">Chamada</a>
+    <a href="{% url 'chamada:turmas' %}">Turmas</a>
+    <a href="{% url 'chamada:qrcode' %}">QR Code</a>
+
+    <!-- EducaDigital -->
+
+    <a href="{% url 'educadigital:home' %}">EducaDigital</a>
+    <a href="{% url 'educadigital:cursos' %}">Cursos</a>
+    <a href="{% url 'educadigital:cadastro' %}">Cadastro</a>
+
+    <a href="{% url 'educadigital:matematica' %}">Matemática</a>
+    <a href="{% url 'educadigital:portugues' %}">Português</a>
+    <a href="{% url 'educadigital:historia' %}">História</a>
+    <a href="{% url 'educadigital:geografia' %}">Geografia</a>
+
+</div>
+
+
+<!-- CONTEÚDO DAS PÁGINAS -->
+
+<div class="content">
+
+    {% block content %}
+    <h1>Matemática</h1>
+
+<p>Escolha o ano:</p>
+
+    <div style="margin-top: 20px;">
+
+        <a href="{% url 'educadigital:matematica6' %}">
+            <button>6º Ano</button>
+        </a>
+
+        <a href="{% url 'educadigital:matematica7' %}">
+            <button>7º Ano</button>
+        </a>
+
+        <a href="{% url 'educadigital:matematica8' %}">
+            <button>8º Ano</button>
+        </a>
+
+        <a href="{% url 'educadigital:matematica9' %}">
+            <button>9º Ano</button>
+        </a>
+
+    </div>
+    {% endblock %}
+
+</div>
+
+</body>
+</html>
