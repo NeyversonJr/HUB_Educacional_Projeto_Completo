@@ -1,0 +1,23 @@
+{% extends "base_tailwind.html" %}
+
+{% block header_kicker %}EducaDigital{% endblock %}
+{% block header_title %}Aprendizado e Quiz{% endblock %}
+{% block header_subtitle %}Escolha uma matéria e pratique.{% endblock %}
+
+{% block content %}
+  <div class="mb-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-soft">
+    <div class="flex min-w-max flex-wrap gap-2">
+      <a class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:home' %}">Início</a>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:cursos' %}">Cursos</a>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:cadastro' %}">Cadastro</a>
+      <span class="mx-1 hidden h-8 w-px self-center bg-slate-200 md:block"></span>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:matematica' %}">Matemática</a>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:portugues' %}">Português</a>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:historia' %}">História</a>
+      <a class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:geografia' %}">Geografia</a>
+    </div>
+  </div>
+
+  {% block educa_content %}{% endblock %}
+{% endblock %}
+

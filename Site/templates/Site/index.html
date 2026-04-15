@@ -1,73 +1,125 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'Site/style.css' %}">
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Professor - Sistema de Gestão Escolar</title>
-</head>
-<body class="bg-background text-foreground">
-    <div class="container">
+{% extends "base_tailwind.html" %}
 
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="icon">
-                        <!--<img src="{% static 'pagina_web/images/iconprofessor.jpg' %}" alt="Logo"> -->
-                    </div>
-                    <div class="text">
-                        <h1>Área do Professor</h1>
-                        <p>Sistema de Gestão Escolar</p>
-                    </div>
-                </div>
-                <button class="back-button" id="backButton">
-                    <span>&larr; Voltar ao Dashboard</span>
-                </button>
-            </div>
-        </header>
+{% block title %}Home{% endblock %}
+{% block header_kicker %}HUB{% endblock %}
+{% block header_title %}Portal Educacional{% endblock %}
+{% block header_subtitle %}Tudo em um só lugar: presença por QR, gerenciamento de turmas e conteúdos interativos.{% endblock %}
 
-        <!-- Main Content -->
-        <main>
-            <section class="welcome">
-                <h2>Bem-vindo, Professor!</h2>
-                <p>Gerencie suas turmas, faça chamadas e organize suas aulas de forma eficiente.</p>
-            </section>
+{% block header_actions %}
+  <a class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-500" href="{% url 'educadigital:home' %}">
+    Explorar conteúdos
+  </a>
+  <a class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800" href="{% url 'chamada:professor' %}">
+    Área do professor
+  </a>
+{% endblock %}
 
-            <!-- Cards Section -->
-            <section class="dashboard">
-                <div class="card" id="attendanceCard">
-                    <h3>Visualizar Chamada</h3>
-                    <p>Faça a chamada dos alunos e registre a presença em tempo real</p>
-                     <a class="action-btn" href="{% url 'chamada:chamada' %}">Acessar</a>
-                </div>
-                <div class="card" id="classesCard">
-                    <h3>Gerenciar Turmas</h3>
-                    <p>Configure e organize suas turmas, horários e alunos</p>
-                     <a class="action-btn" href="{% url 'chamada:turmas' %}">Acessar</a>
-                </div>
-                <div class="card" id="qrcodeCard">
-                    <h3>Gerar QR Code</h3>
-                    <p>Crie QR Codes para check-in automático dos alunos</p>
-                    <a class="action-btn" href="{% url 'chamada:qrcode' %}">Acessar</a>
-                </div>
-                <div class="card" id="qrcodeCard">
-                    <h3>Professor</h3>
-                    <p>Veja a área do professor e suas funcionalidades</p>
-                    <a class="action-btn" href="{% url 'chamada:professor' %}">Acessar</a>
-                </div>
-                <div class="card" id="qrcodeCard">
-                    <h3>Ir para educadigital</h3>
-                    <p>Site de quizzes</p>
-                    <a class="action-btn" href="{% url 'educadigital:home' %}">Acessar</a>
-                </div>
-            </section>
-        </main>
+{% block content %}
+  <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+    <div class="grid gap-8 p-6 md:grid-cols-2 md:items-center md:p-10">
+      <div>
+        <p class="inline-flex items-center rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-100">
+          Novo design padronizado
+        </p>
+        <h2 class="mt-4 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+          Um hub com experiência de produto: simples, rápido e consistente.
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600">
+          Crie turmas, gere QR de presença e acesse conteúdos interativos com o mesmo padrão visual — como um “catálogo” de funcionalidades.
+        </p>
+
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800" href="{% url 'Site:login' %}">
+            Entrar na conta
+          </a>
+          <a class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'chamada:cadastro_aluno' %}">
+            Criar conta de aluno
+          </a>
+        </div>
+
+        <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Presença</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">QR + validação</p>
+            <p class="mt-1 text-xs text-slate-600">Token expira e exige matrícula.</p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Conteúdo</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">Quizzes por matéria</p>
+            <p class="mt-1 text-xs text-slate-600">Navegação clara por seções.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-100 blur-2xl"></div>
+        <div class="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-slate-200 blur-2xl"></div>
+        <div class="relative grid gap-4">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Atalho</p>
+            <p class="mt-1 text-base font-semibold text-slate-900">Área do professor</p>
+            <p class="mt-1 text-sm text-slate-600">Chamada manual, QR e gerenciamento de turmas.</p>
+            <a class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'chamada:professor' %}">
+              Acessar
+            </a>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Atalho</p>
+            <p class="mt-1 text-base font-semibold text-slate-900">EducaDigital</p>
+            <p class="mt-1 text-sm text-slate-600">Quizzes e conteúdos por matéria.</p>
+            <a class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800" href="{% url 'educadigital:home' %}">
+              Explorar conteúdos
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <script>
-        document.getElementById("backButton").style.display = "none"; // Esconder o botão de voltar inicialmente
-    </script>
-</body>
-</html>
+  <section class="mt-8">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'chamada:professor' %}">
+        <div class="flex items-start gap-4">
+          <div class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-100">
+            <span class="text-sm font-bold">P</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Área</p>
+            <h3 class="mt-1 truncate text-base font-semibold text-slate-900">Professor</h3>
+            <p class="mt-1 text-sm text-slate-600">Turmas, aulas, presença e QR Code.</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Abrir painel →</p>
+      </a>
+
+      <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'chamada:cadastro_aluno' %}">
+        <div class="flex items-start gap-4">
+          <div class="grid h-10 w-10 place-items-center rounded-xl bg-slate-50 text-slate-700 ring-1 ring-slate-200">
+            <span class="text-sm font-bold">A</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cadastro</p>
+            <h3 class="mt-1 truncate text-base font-semibold text-slate-900">Aluno</h3>
+            <p class="mt-1 text-sm text-slate-600">Conta para check-in de presença via QR.</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm font-semibold text-slate-900 group-hover:text-slate-700">Criar conta →</p>
+      </a>
+
+      <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:home' %}">
+        <div class="flex items-start gap-4">
+          <div class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
+            <span class="text-sm font-bold">E</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Conteúdo</p>
+            <h3 class="mt-1 truncate text-base font-semibold text-slate-900">EducaDigital</h3>
+            <p class="mt-1 text-sm text-slate-600">Quizzes e materiais por matéria.</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm font-semibold text-emerald-700 group-hover:text-emerald-600">Entrar →</p>
+      </a>
+    </div>
+  </section>
+{% endblock %}

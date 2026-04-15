@@ -1,0 +1,54 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Editar turma{% endblock %}
+{% block header_kicker %}Professor{% endblock %}
+{% block header_title %}Editar turma{% endblock %}
+{% block header_subtitle %}Atualize o nome da turma e gerencie os alunos matriculados. O código permanece fixo.{% endblock %}
+
+{% block content %}
+  <div class="grid gap-6 lg:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Turma</p>
+      <p class="mt-1 text-base font-semibold text-slate-900">{{ turma.nome }}</p>
+      <p class="mt-1 text-sm text-slate-600">Código: <span class="font-semibold text-slate-900">{{ turma.codigo }}</span></p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <a class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'chamada:turmas' %}">
+          ← Voltar
+        </a>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft lg:col-span-2">
+      <h2 class="text-base font-semibold text-slate-900">Editar turma</h2>
+      <p class="mt-1 text-sm text-slate-600">Atualize o nome e selecione os alunos matriculados.</p>
+
+      <form method="post" class="mt-5 space-y-4">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.nome.id_for_label }}">Nome</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.nome.id_for_label }}" name="{{ form.nome.html_name }}" value="{{ form.nome.value|default:'' }}" />
+          {% if form.nome.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.nome.errors }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.alunos.id_for_label }}">Alunos</label>
+          {{ form.alunos }}
+          {% if form.alunos.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.alunos.errors }}</p>{% endif %}
+          <p class="mt-1 text-xs text-slate-600">{{ form.alunos.help_text }}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" type="submit">
+            Salvar
+          </button>
+          <a class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'chamada:turmas' %}">
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+

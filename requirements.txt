@@ -1,0 +1,2 @@
+django==5.2
+qrcode[pil]==8.2

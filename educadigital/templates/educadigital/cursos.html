@@ -1,79 +1,28 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Sistema Educacional{% endblock %}</title>
+{% extends "educadigital/base_educadigital.html" %}
 
-    <link rel="stylesheet" href="{% static 'Site/style.css' %}">
+{% block title %}Cursos{% endblock %}
+{% block header_title %}Cursos{% endblock %}
+{% block header_subtitle %}Uma vitrine em formato grid (estilo e-commerce).{% endblock %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .navbar {
-            background-color: #1e3a8a;
-            padding: 12px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        .content {
-            padding: 20px;
-        }
-    </style>
-</head>
-
-<body>
-
-<!-- NAVBAR GLOBAL -->
-
-<div class="navbar">
-
-    <!-- Site -->
-
-    <a href="{% url 'Site:index' %}">Home</a>
-    <a href="{% url 'chamada:professor' %}">Professor</a>
-    <a href="{% url 'chamada:chamada' %}">Chamada</a>
-    <a href="{% url 'chamada:turmas' %}">Turmas</a>
-    <a href="{% url 'chamada:qrcode' %}">QR Code</a>
-
-    <!-- EducaDigital -->
-
-    <a href="{% url 'educadigital:home' %}">EducaDigital</a>
-    <a href="{% url 'educadigital:cursos' %}">Cursos</a>
-    <a href="{% url 'educadigital:cadastro' %}">Cadastro</a>
-
-    <a href="{% url 'educadigital:matematica' %}">Matemática</a>
-    <a href="{% url 'educadigital:portugues' %}">Português</a>
-    <a href="{% url 'educadigital:historia' %}">História</a>
-    <a href="{% url 'educadigital:geografia' %}">Geografia</a>
-
-</div>
-
-
-<!-- CONTEÚDO DAS PÁGINAS -->
-
-<div class="content">
-
-    {% block content %}
-
-    {% endblock %}
-
-</div>
-
-</body>
-</html>
+{% block educa_content %}
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">Matemática (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Conteúdos e quizzes por ano.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:matematica' %}">Acessar</a>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">Português (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Leitura, gramática e exercícios.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:portugues' %}">Acessar</a>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">História (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Conteúdos e prática.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:historia' %}">Acessar</a>
+    </div>
+  </div>
+{% endblock %}

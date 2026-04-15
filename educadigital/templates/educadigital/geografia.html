@@ -1,101 +1,26 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Sistema Educacional{% endblock %}</title>
+{% extends "educadigital/base_educadigital.html" %}
 
-    <link rel="stylesheet" href="{% static 'Site/style.css' %}">
+{% block title %}Geografia{% endblock %}
+{% block header_title %}Geografia{% endblock %}
+{% block header_subtitle %}Escolha o ano para começar.{% endblock %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .navbar {
-            background-color: #1e3a8a;
-            padding: 12px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        .content {
-            padding: 20px;
-        }
-    </style>
-</head>
-
-<body>
-
-<!-- NAVBAR GLOBAL -->
-
-<div class="navbar">
-
-    <!-- Site -->
-
-    <a href="{% url 'Site:index' %}">Home</a>
-    <a href="{% url 'chamada:professor' %}">Professor</a>
-    <a href="{% url 'chamada:chamada' %}">Chamada</a>
-    <a href="{% url 'chamada:turmas' %}">Turmas</a>
-    <a href="{% url 'chamada:qrcode' %}">QR Code</a>
-
-    <!-- EducaDigital -->
-
-    <a href="{% url 'educadigital:home' %}">EducaDigital</a>
-    <a href="{% url 'educadigital:cursos' %}">Cursos</a>
-    <a href="{% url 'educadigital:cadastro' %}">Cadastro</a>
-
-    <a href="{% url 'educadigital:matematica' %}">Matemática</a>
-    <a href="{% url 'educadigital:portugues' %}">Português</a>
-    <a href="{% url 'educadigital:historia' %}">História</a>
-    <a href="{% url 'educadigital:geografia' %}">Geografia</a>
-
-</div>
-
-
-<!-- CONTEÚDO DAS PÁGINAS -->
-
-<div class="content">
-
-    {% block content %}
-    <h1>Geografia</h1>
-
-<p>Escolha o ano:</p>
-
-    <div style="margin-top: 20px;">
-
-        <a href="{% url 'educadigital:geografia6' %}">
-            <button>6º Ano</button>
-        </a>
-
-        <a href="{% url 'educadigital:geografia7' %}">
-            <button>7º Ano</button>
-        </a>
-
-        <a href="{% url 'educadigital:geografia8' %}">
-            <button>8º Ano</button>
-        </a>
-
-        <a href="{% url 'educadigital:geografia9' %}">
-            <button>9º Ano</button>
-        </a>
-
-    </div>
-    {% endblock %}
-
-</div>
-
-</body>
-</html>
+{% block educa_content %}
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:geografia6' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">6º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:geografia7' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">7º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:geografia8' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">8º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:geografia9' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">9º</p>
+    </a>
+  </div>
+{% endblock %}

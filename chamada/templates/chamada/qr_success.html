@@ -1,0 +1,19 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Presença confirmada{% endblock %}
+{% block header_kicker %}Aluno{% endblock %}
+{% block header_title %}Presença confirmada{% endblock %}
+{% block header_subtitle %}{{ aula.turma.nome }} ({{ aula.turma.codigo }}){% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+    <div class="rounded-2xl bg-emerald-50 p-4 text-emerald-900 ring-1 ring-emerald-200">
+      <p class="text-sm font-semibold">Sucesso</p>
+      <p class="mt-1 text-sm">Sua presença foi registrada.</p>
+    </div>
+    <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'Site:index' %}">
+      Voltar
+    </a>
+  </div>
+{% endblock %}
+

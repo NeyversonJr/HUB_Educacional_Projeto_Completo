@@ -1,0 +1,83 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Cadastro do Aluno{% endblock %}
+{% block header_kicker %}Cadastro{% endblock %}
+{% block header_title %}Aluno{% endblock %}
+{% block header_subtitle %}Crie sua conta para registrar presença via QR.{% endblock %}
+
+{% block content %}
+  <div class="grid gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <h2 class="text-base font-semibold">Antes de começar</h2>
+      <div class="mt-4 space-y-3 text-sm text-slate-600">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p class="font-semibold text-slate-900">Como funciona a presença</p>
+          <p class="mt-1">Você faz login e escaneia o QR gerado pelo professor. Se você não estiver logado, será enviado ao login e voltará automaticamente para confirmar.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p class="font-semibold text-slate-900">Dados necessários</p>
+          <ul class="mt-2 list-disc pl-5">
+            <li><strong>Usuário</strong> e <strong>senha</strong></li>
+            <li><strong>Nome completo</strong></li>
+            <li><strong>Matrícula</strong> (única)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <h2 class="text-base font-semibold">Criar conta</h2>
+      <p class="mt-1 text-sm text-slate-600">Preencha para criar seu acesso.</p>
+
+      <form method="post" class="mt-5 space-y-4">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.username.id_for_label }}">Usuário</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" value="{{ form.username.value|default:'' }}" />
+          {% if form.username.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.username.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.password1.id_for_label }}">Senha</label>
+          <input type="password" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.password1.id_for_label }}" name="{{ form.password1.html_name }}" />
+          {% if form.password1.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.password1.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
+          <input type="password" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.password2.id_for_label }}" name="{{ form.password2.html_name }}" />
+          {% if form.password2.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.password2.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.nome_completo.id_for_label }}">Nome Completo</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.nome_completo.id_for_label }}" name="{{ form.nome_completo.html_name }}" value="{{ form.nome_completo.value|default:'' }}" />
+          {% if form.nome_completo.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.nome_completo.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.email.id_for_label }}">Email (opcional)</label>
+          <input type="email" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default:'' }}" />
+          {% if form.email.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.email.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.matricula.id_for_label }}">Matrícula</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.matricula.id_for_label }}" name="{{ form.matricula.html_name }}" value="{{ form.matricula.value|default:'' }}" />
+          {% if form.matricula.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.matricula.errors }}</p>{% endif %}
+        </div>
+        <button class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800" type="submit">
+          Cadastrar aluno
+        </button>
+      </form>
+
+      <p class="mt-4 text-center text-sm text-slate-600">
+        Já tenho conta.
+        <a class="font-semibold text-slate-900 underline-offset-4 hover:underline" href="{% url 'Site:login' %}">Entrar</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
+
