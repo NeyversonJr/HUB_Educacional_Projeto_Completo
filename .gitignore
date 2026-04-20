@@ -166,6 +166,10 @@ venv.bak/
 
 # mkdocs documentation
 /site
+# But allow Django templates in Site/templates/
+!Site/
+!Site/templates/
+!Site/templates/**
 
 # mypy
 .mypy_cache/
