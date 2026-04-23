@@ -1,0 +1,22 @@
+{% extends "educadigital/base_educadigital.html" %}
+
+{% block title %}Cadastro{% endblock %}
+{% block header_title %}Cadastro{% endblock %}
+{% block header_subtitle %}Crie conta de aluno ou professor (mesmo padrão visual).{% endblock %}
+
+{% block educa_content %}
+  <div class="grid gap-6 lg:grid-cols-2">
+    <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'chamada:cadastro_aluno' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">HUB</p>
+      <h2 class="mt-1 text-lg font-semibold">Cadastro de Aluno</h2>
+      <p class="mt-2 text-sm text-slate-600">Para registrar presença via QR e acessar recursos do aluno.</p>
+      <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Criar conta →</p>
+    </a>
+    <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'chamada:cadastro_professor' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">HUB</p>
+      <h2 class="mt-1 text-lg font-semibold">Cadastro de Professor</h2>
+      <p class="mt-2 text-sm text-slate-600">Para criar turmas, fazer chamada e gerar QR de presença.</p>
+      <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Criar conta →</p>
+    </a>
+  </div>
+{% endblock %}

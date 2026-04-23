@@ -1,0 +1,28 @@
+{% extends "educadigital/base_educadigital.html" %}
+
+{% block title %}Cursos{% endblock %}
+{% block header_title %}Cursos{% endblock %}
+{% block header_subtitle %}Uma vitrine em formato grid (estilo e-commerce).{% endblock %}
+
+{% block educa_content %}
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">Matemática (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Conteúdos e quizzes por ano.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:matematica' %}">Acessar</a>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">Português (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Leitura, gramática e exercícios.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:portugues' %}">Acessar</a>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Curso</p>
+      <h2 class="mt-1 text-lg font-semibold">História (Base)</h2>
+      <p class="mt-2 text-sm text-slate-600">Conteúdos e prática.</p>
+      <a class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:historia' %}">Acessar</a>
+    </div>
+  </div>
+{% endblock %}

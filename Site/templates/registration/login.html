@@ -1,0 +1,80 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Login{% endblock %}
+{% block header_kicker %}Conta{% endblock %}
+{% block header_title %}Login{% endblock %}
+{% block header_subtitle %}Entre para continuar (incluindo presença via QR).{% endblock %}
+
+{% block content %}
+  <div class="grid gap-6 md:grid-cols-2">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <h2 class="text-lg font-semibold">Entrar</h2>
+      <p class="mt-1 text-sm text-slate-600">Use seu usuário e senha.</p>
+
+      {% if form.errors %}
+        <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+          Usuário ou senha inválidos.
+        </div>
+      {% endif %}
+
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.username.id_for_label }}">Usuário</label>
+          <input
+            class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+            id="{{ form.username.id_for_label }}"
+            name="{{ form.username.html_name }}"
+            value="{{ form.username.value|default:'' }}"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.password.id_for_label }}">Senha</label>
+          <input
+            class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+            id="{{ form.password.id_for_label }}"
+            name="{{ form.password.html_name }}"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        {% if next %}
+          <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
+        <button class="inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" type="submit">
+          Entrar
+        </button>
+      </form>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <h2 class="text-lg font-semibold">Ainda não tem conta?</h2>
+      <p class="mt-1 text-sm text-slate-600">Escolha o tipo de cadastro.</p>
+
+      <div class="mt-6 grid gap-3">
+        <a class="group rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-slate-300 hover:bg-white" href="{% url 'chamada:cadastro_aluno' %}">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold">Cadastro de Aluno</p>
+              <p class="mt-1 text-sm text-slate-600">Para registrar presença via QR.</p>
+            </div>
+            <span class="text-slate-400 group-hover:text-slate-700">→</span>
+          </div>
+        </a>
+        <a class="group rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:border-slate-300 hover:bg-white" href="{% url 'chamada:cadastro_professor' %}">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold">Cadastro de Professor</p>
+              <p class="mt-1 text-sm text-slate-600">Para gerar QR e fazer chamada manual.</p>
+            </div>
+            <span class="text-slate-400 group-hover:text-slate-700">→</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

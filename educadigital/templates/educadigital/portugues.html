@@ -1,0 +1,26 @@
+{% extends "educadigital/base_educadigital.html" %}
+
+{% block title %}Português{% endblock %}
+{% block header_title %}Português{% endblock %}
+{% block header_subtitle %}Escolha o ano para começar.{% endblock %}
+
+{% block educa_content %}
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:portugues6' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">6º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:portugues7' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">7º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:portugues8' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">8º</p>
+    </a>
+    <a class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:portugues9' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ano</p>
+      <p class="mt-1 text-lg font-semibold">9º</p>
+    </a>
+  </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Chamada - {{ aula.turma.codigo }}{% endblock %}
+{% block header_kicker %}Chamada{% endblock %}
+{% block header_title %}{{ aula.turma.nome }}{% endblock %}
+{% block header_subtitle %}{{ aula.turma.codigo }} · {{ aula.inicio_em }}{% endblock %}
+
+{% block content %}
+  <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+    <form method="post">
+      {% csrf_token %}
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 class="text-base font-semibold">Lista de alunos</h2>
+          <p class="mt-1 text-sm text-slate-600">Defina Presente/Falta e clique em salvar.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'chamada:chamada' %}">Voltar</a>
+          <button class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800" type="submit">Salvar</button>
+        </div>
+      </div>
+
+      <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
+            <tr>
+              <th class="px-4 py-3">Aluno</th>
+              <th class="px-4 py-3">Matrícula</th>
+              <th class="px-4 py-3">Situação</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {% for presenca in presencas %}
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-medium text-slate-900">{{ presenca.aluno.nome_completo }}</td>
+                <td class="px-4 py-3 text-slate-600">{{ presenca.aluno.matricula }}</td>
+                <td class="px-4 py-3">
+                  <select class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" name="presenca_{{ presenca.id }}">
+                    <option value="PRESENTE" {% if presenca.status == 'PRESENTE' %}selected{% endif %}>Presente</option>
+                    <option value="FALTA" {% if presenca.status == 'FALTA' %}selected{% endif %}>Falta</option>
+                  </select>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+

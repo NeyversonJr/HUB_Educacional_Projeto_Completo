@@ -1,0 +1,524 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Área do Professor{% endblock %}
+{% block header_kicker %}Professor{% endblock %}
+{% block header_title %}Dashboard{% endblock %}
+{% block header_subtitle %}Bem-vindo, {{ professor.nome_completo }}.{% endblock %}
+
+{% block content %}
+  <div class="mb-8 border-b border-slate-200">
+    <div class="flex gap-8">
+      <button onclick="mostrarAba('dashboard')" id="btn-dashboard" class="aba-btn py-4 px-1 border-b-2 border-slate-900 text-slate-900 font-semibold cursor-pointer transition">
+        📊 Dashboard
+      </button>
+      <button onclick="mostrarAba('bncc')" id="btn-bncc" class="aba-btn py-4 px-1 border-b-2 border-transparent text-slate-600 font-semibold cursor-pointer transition hover:text-slate-900">
+        📚 BNCC
+      </button>
+      <button onclick="mostrarAba('plano')" id="btn-plano" class="aba-btn py-4 px-1 border-b-2 border-transparent text-slate-600 font-semibold cursor-pointer transition hover:text-slate-900">
+        📋 Plano de Ensino
+      </button>
+    </div>
+  </div>
+
+  <div id="aba-dashboard" class="aba-content">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:chamada' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Chamada</p>
+            <h2 class="mt-1 text-lg font-semibold">Marcar presença</h2>
+            <p class="mt-2 text-sm text-slate-600">Inicie uma aula e altere o status para Presente/Falta.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
+
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:qrcode' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">QR Code</p>
+            <h2 class="mt-1 text-lg font-semibold">Check-in automático</h2>
+            <p class="mt-2 text-sm text-slate-600">Gere um QR com token curto para o aluno confirmar presença.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
+
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:turmas' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Turmas</p>
+            <h2 class="mt-1 text-lg font-semibold">Gerenciar</h2>
+            <p class="mt-2 text-sm text-slate-600">(Por enquanto) gerencie via Admin do Django.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="mt-8 rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold">Suas turmas</h3>
+        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ turmas|length }}</span>
+      </div>
+
+      {% if turmas %}
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {% for turma in turmas %}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ turma.codigo }}</p>
+              <p class="mt-1 font-semibold">{{ turma.nome }}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <form method="post" action="{% url 'chamada:criar_aula' turma.id %}">
+                  {% csrf_token %}
+                  <button class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800" type="submit">Iniciar aula</button>
+                </form>
+                <form method="post" action="{% url 'chamada:gerar_qr_nova_aula' turma.id %}">
+                  {% csrf_token %}
+                  <button class="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" type="submit">Gerar QR</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mt-3 text-sm text-slate-600">Nenhuma turma cadastrada ainda.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div id="aba-bncc" class="aba-content hidden">
+    <div class="mb-6 flex gap-2 flex-wrap">
+      <button onclick="mostrarBnccSerie('geral')" id="btn-bncc-geral" class="serie-btn-bncc px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold cursor-pointer transition">
+        📖 Visão Geral
+      </button>
+      <button onclick="mostrarBnccSerie('5ano')" id="btn-bncc-5ano" class="serie-btn-bncc px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">
+        5º Ano
+      </button>
+      <button onclick="mostrarBnccSerie('6ano')" id="btn-bncc-6ano" class="serie-btn-bncc px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">
+        6º Ano
+      </button>
+      <button onclick="mostrarBnccSerie('7ano')" id="btn-bncc-7ano" class="serie-btn-bncc px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">
+        7º Ano
+      </button>
+      <button onclick="mostrarBnccSerie('8ano')" id="btn-bncc-8ano" class="serie-btn-bncc px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">
+        8º Ano
+      </button>
+      <button onclick="mostrarBnccSerie('9ano')" id="btn-bncc-9ano" class="serie-btn-bncc px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">
+        9º Ano
+      </button>
+    </div>
+
+    <div id="bncc-geral" class="bncc-serie space-y-6">
+      <div class="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Base Nacional Comum Curricular</h2>
+        <p class="mt-2 text-blue-100">Documento normativo que define aprendizagens essenciais para Educação Básica</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-blue-900 mb-3">O que é?</h3>
+          <p class="text-blue-800 text-sm mb-3">Documento normativo que define aprendizagens essenciais progressivas na Educação Básica.</p>
+          <ul class="space-y-2 text-sm text-blue-800">
+            <li>✓ Caráter Obrigatório em todos os sistemas</li>
+            <li>✓ Garante equidade e qualidade para todos</li>
+            <li>✓ Progressivo conforme desenvolvimento</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-br from-green-50 to-green-100 p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-green-900 mb-3">5 Áreas Principais</h3>
+          <ul class="space-y-2 text-sm text-green-800">
+            <li>📖 <strong>Linguagens</strong> - Português, Ed. Física, Arte, Inglês</li>
+            <li>🔢 <strong>Matemática</strong> - Números, Álgebra, Geometria</li>
+            <li>🔬 <strong>Ciências</strong> - Matéria, Vida, Terra, Universo</li>
+            <li>👥 <strong>Humanas</strong> - História e Geografia</li>
+            <li>🎯 <strong>Ensino Religioso</strong> - Identidades e crenças</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bncc-5ano" class="bncc-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">BNCC - 5º Ano</h2>
+        <p class="mt-2 text-blue-100">Consolidação de leitura, escrita, operações e conceitos científicos</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Linguagens</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Leitura fluida com interpretação</li>
+            <li>✓ Produção de textos narrativos</li>
+            <li>✓ Análise de diferentes gêneros</li>
+            <li>✓ Expressão oral estruturada</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Exatas e Naturais</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Operações com naturais e frações</li>
+            <li>✓ Compreensão de fenômenos naturais</li>
+            <li>✓ Conhecimento do corpo humano</li>
+            <li>✓ Leitura básica de mapas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bncc-6ano" class="bncc-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-green-500 to-green-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">BNCC - 6º Ano</h2>
+        <p class="mt-2 text-green-100">Aprofundamento, análise crítica e números inteiros</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Humanidades</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Análise crítica de textos</li>
+            <li>✓ Gêneros textuais diversos</li>
+            <li>✓ Classes de palavras</li>
+            <li>✓ História da antiguidade</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Científicas</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Operações com inteiros e frações</li>
+            <li>✓ Célula e classificação dos seres</li>
+            <li>✓ Conceitos de ecologia</li>
+            <li>✓ Estudo de continentes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bncc-7ano" class="bncc-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">BNCC - 7º Ano</h2>
+        <p class="mt-2 text-yellow-100">Funções da linguagem, álgebra básica e sistemas do corpo</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Linguagem e História</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Funções da linguagem</li>
+            <li>✓ Análise de discurso</li>
+            <li>✓ Textos argumentativos</li>
+            <li>✓ Idade Medieval e Moderna</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Ciência e Matemática</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Álgebra e equações 1º grau</li>
+            <li>✓ Sistemas do corpo humano</li>
+            <li>✓ Reprodução e genética</li>
+            <li>✓ Geopolítica regional</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bncc-8ano" class="bncc-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">BNCC - 8º Ano</h2>
+        <p class="mt-2 text-red-100">Análise de mídia, álgebra aprofundada, genética e evolução</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Crítica e História</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Análise crítica de mídia</li>
+            <li>✓ Publicidade e persuasão</li>
+            <li>✓ Resenhas e análises</li>
+            <li>✓ História Moderna e Iluminismo</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Ciência Avançada</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Polinômios e fatoração</li>
+            <li>✓ Genética e evolução</li>
+            <li>✓ Reações químicas</li>
+            <li>✓ Economia e sustentabilidade</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="bncc-9ano" class="bncc-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">BNCC - 9º Ano</h2>
+        <p class="mt-2 text-purple-100">Consolidação e preparação para Ensino Médio</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Análise Avançada</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Análise crítica de fontes</li>
+            <li>✓ Argumentação avançada</li>
+            <li>✓ Dissertação argumentativa</li>
+            <li>✓ História contemporânea</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Habilidades - Pré-Ensino Médio</h3>
+          <ul class="space-y-2 text-slate-700 text-sm">
+            <li>✓ Funções quadráticas</li>
+            <li>✓ Trigonometria básica</li>
+            <li>✓ Química e física aplicadas</li>
+            <li>✓ Geopolítica global e sustentabilidade</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="aba-plano" class="aba-content hidden">
+    <div class="mb-6 flex gap-2 flex-wrap">
+      <button onclick="mostrarPlanoSerie('5ano')" id="btn-5ano" class="serie-btn px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold cursor-pointer transition">5º Ano</button>
+      <button onclick="mostrarPlanoSerie('6ano')" id="btn-6ano" class="serie-btn px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">6º Ano</button>
+      <button onclick="mostrarPlanoSerie('7ano')" id="btn-7ano" class="serie-btn px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">7º Ano</button>
+      <button onclick="mostrarPlanoSerie('8ano')" id="btn-8ano" class="serie-btn px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">8º Ano</button>
+      <button onclick="mostrarPlanoSerie('9ano')" id="btn-9ano" class="serie-btn px-4 py-2 rounded-lg bg-slate-200 text-slate-700 font-semibold cursor-pointer transition hover:bg-slate-300">9º Ano</button>
+    </div>
+
+    <div id="plano-5ano" class="plano-serie space-y-6">
+      <div class="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 5º Ano</h2>
+        <p class="mt-2 text-blue-100">Consolidação de leitura, escrita, operações matemáticas básicas e conceitos científicos</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Fluência, interpretação, gramática, expressão</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Leitura compartilhada, produções colaborativas, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Naturais, frações, decimais, geometria</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Problemas contextualizados, jogos, materiais</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Natureza, corpo humano, energia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Experimentação, observação, documentários</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Brasil, mundo, civilizações</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Documentos, linha do tempo, dramatizações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Espaços, mapas, paisagens</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas, observação, projetos sustentáveis</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-6ano" class="plano-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-green-500 to-green-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 6º Ano</h2>
+        <p class="mt-2 text-green-100">Aprofundamento em análise, números inteiros e organização dos seres vivos</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Análise crítica, gêneros, coerência</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Textos autênticos, obras clássicas, reescrita</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Inteiros, frações, proporcionalidade</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Jogos, problemas, tecnologia</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Célula, ecologia, corpo humano</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Laboratorial, microscópios, modelos</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Antiguidade, Brasil, contexto</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Fontes históricas, seminários</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Continentes, biomas, população</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas, pesquisas, análises</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-7ano" class="plano-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 7º Ano</h2>
+        <p class="mt-2 text-yellow-100">Funções da linguagem, álgebra e sistemas do corpo humano</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Funções linguagem, argumentação</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Obras literárias, publicidades, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Álgebra, equações, geometria</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Problemas contextualizados, software</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Corpo, reprodução, genética</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Laboratório, experimentos, modelos</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Medieval, moderna, Brasil</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de fontes, seminários</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> América, urbanização, economia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas políticos, discussões</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-8ano" class="plano-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 8º Ano</h2>
+        <p class="mt-2 text-red-100">Análise de discurso avançada, álgebra aprofundada e genética</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Discurso, argumentação, literatura</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Obras completas, análise de mídia</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Polinômios, geometria euclidiana</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Construções geométricas, software</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Evolução, genética, química</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Experimentos, análise genética</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Moderna, iluminismo, revoluções</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Documentos primários, análises</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Brasil regional, industrialização</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas detalhados, estudos</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-9ano" class="plano-serie space-y-6 hidden">
+      <div class="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 9º Ano</h2>
+        <p class="mt-2 text-purple-100">Consolidação final com preparação para Ensino Médio</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Análise crítica, dissertação</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Obras completas, análise de mídias</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Funções, quadráticas, geometria</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Software, problemas ENEM</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Química, física, biotecnologia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Experimentos, simulações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Contemporânea, globalização</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Documentos, seminários</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Globalização, sustentabilidade</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de notícias, indicadores</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+<script>
+  function mostrarAba(nomeAba) {
+    document.querySelectorAll('.aba-content').forEach(aba => {
+      aba.classList.add('hidden');
+    });
+    
+    document.querySelectorAll('.aba-btn').forEach(btn => {
+      btn.classList.remove('border-b-slate-900', 'text-slate-900');
+      btn.classList.add('border-transparent', 'text-slate-600');
+    });
+    
+    const abaElement = document.getElementById('aba-' + nomeAba);
+    if (abaElement) {
+      abaElement.classList.remove('hidden');
+    }
+    
+    const btnElement = document.getElementById('btn-' + nomeAba);
+    if (btnElement) {
+      btnElement.classList.remove('border-transparent', 'text-slate-600');
+      btnElement.classList.add('border-b-slate-900', 'text-slate-900');
+    }
+  }
+
+  function mostrarBnccSerie(serie) {
+    document.querySelectorAll('.bncc-serie').forEach(plano => {
+      plano.classList.add('hidden');
+    });
+    
+    document.querySelectorAll('.serie-btn-bncc').forEach(btn => {
+      btn.classList.remove('bg-blue-600', 'text-white');
+      btn.classList.add('bg-slate-200', 'text-slate-700');
+    });
+    
+    const planoElement = document.getElementById('bncc-' + serie);
+    if (planoElement) {
+      planoElement.classList.remove('hidden');
+    }
+    
+    const btnElement = document.getElementById('btn-bncc-' + serie);
+    if (btnElement) {
+      btnElement.classList.remove('bg-slate-200', 'text-slate-700');
+      btnElement.classList.add('bg-blue-600', 'text-white');
+    }
+  }
+
+  function mostrarPlanoSerie(serie) {
+    document.querySelectorAll('.plano-serie').forEach(plano => {
+      plano.classList.add('hidden');
+    });
+    
+    document.querySelectorAll('.serie-btn').forEach(btn => {
+      btn.classList.remove('bg-blue-600', 'text-white');
+      btn.classList.add('bg-slate-200', 'text-slate-700');
+    });
+    
+    const planoElement = document.getElementById('plano-' + serie);
+    if (planoElement) {
+      planoElement.classList.remove('hidden');
+    }
+    
+    const btnElement = document.getElementById('btn-' + serie);
+    if (btnElement) {
+      btnElement.classList.remove('bg-slate-200', 'text-slate-700');
+      btnElement.classList.add('bg-blue-600', 'text-white');
+    }
+  }
+</script>

@@ -1,0 +1,40 @@
+{% extends "educadigital/base_educadigital.html" %}
+
+{% block title %}EducaDigital{% endblock %}
+{% block header_title %}EducaDigital{% endblock %}
+{% block header_subtitle %}Explore matérias e pratique com quizzes.{% endblock %}
+
+{% block educa_content %}
+  <div class="grid gap-6 lg:grid-cols-3">
+    <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:matematica' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Matéria</p>
+      <h2 class="mt-1 text-lg font-semibold">Matemática</h2>
+      <p class="mt-2 text-sm text-slate-600">Questões e prática.</p>
+      <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Acessar →</p>
+    </a>
+    <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:portugues' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Matéria</p>
+      <h2 class="mt-1 text-lg font-semibold">Português</h2>
+      <p class="mt-2 text-sm text-slate-600">Leitura e gramática.</p>
+      <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Acessar →</p>
+    </a>
+    <a class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5" href="{% url 'educadigital:historia' %}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Matéria</p>
+      <h2 class="mt-1 text-lg font-semibold">História</h2>
+      <p class="mt-2 text-sm text-slate-600">Conteúdos e exercícios.</p>
+      <p class="mt-4 text-sm font-semibold text-brand-700 group-hover:text-brand-600">Acessar →</p>
+    </a>
+  </div>
+
+  <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h3 class="text-base font-semibold">Quer ver cursos?</h3>
+        <p class="mt-1 text-sm text-slate-600">Acesse a vitrine de cursos e navegue no mesmo padrão visual.</p>
+      </div>
+      <a class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" href="{% url 'educadigital:cursos' %}">
+        Ver cursos
+      </a>
+    </div>
+  </div>
+{% endblock %}

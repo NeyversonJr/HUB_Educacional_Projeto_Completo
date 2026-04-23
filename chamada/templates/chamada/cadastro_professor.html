@@ -1,0 +1,83 @@
+{% extends "base_tailwind.html" %}
+
+{% block title %}Cadastro do Professor{% endblock %}
+{% block header_kicker %}Cadastro{% endblock %}
+{% block header_title %}Professor{% endblock %}
+{% block header_subtitle %}Crie sua conta para gerar QR e registrar chamadas.{% endblock %}
+
+{% block content %}
+  <div class="grid gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <h2 class="text-base font-semibold">O que você poderá fazer</h2>
+      <div class="mt-4 grid gap-3">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p class="text-sm font-semibold text-slate-900">Chamada manual</p>
+          <p class="mt-1 text-sm text-slate-600">Inicie uma aula e marque Presente/Falta por aluno.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p class="text-sm font-semibold text-slate-900">Presença via QR</p>
+          <p class="mt-1 text-sm text-slate-600">Gere um QR com token curto para check-in automático do aluno.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p class="text-sm font-semibold text-slate-900">Gerenciar turmas</p>
+          <p class="mt-1 text-sm text-slate-600">Crie e remova turmas diretamente na página de turmas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <h2 class="text-base font-semibold">Criar conta</h2>
+      <p class="mt-1 text-sm text-slate-600">Preencha para acessar o painel do professor.</p>
+
+      <form method="post" class="mt-5 space-y-4">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.username.id_for_label }}">Usuário</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" value="{{ form.username.value|default:'' }}" />
+          {% if form.username.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.username.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.password1.id_for_label }}">Senha</label>
+          <input type="password" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.password1.id_for_label }}" name="{{ form.password1.html_name }}" />
+          {% if form.password1.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.password1.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
+          <input type="password" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.password2.id_for_label }}" name="{{ form.password2.html_name }}" />
+          {% if form.password2.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.password2.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.nome_completo.id_for_label }}">Nome Completo</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.nome_completo.id_for_label }}" name="{{ form.nome_completo.html_name }}" value="{{ form.nome_completo.value|default:'' }}" />
+          {% if form.nome_completo.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.nome_completo.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.email.id_for_label }}">Email (opcional)</label>
+          <input type="email" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default:'' }}" />
+          {% if form.email.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.email.errors }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700" for="{{ form.registro_profissional.id_for_label }}">Registro Profissional (opcional)</label>
+          <input class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200" id="{{ form.registro_profissional.id_for_label }}" name="{{ form.registro_profissional.html_name }}" value="{{ form.registro_profissional.value|default:'' }}" />
+          {% if form.registro_profissional.errors %}<p class="mt-1 text-sm text-rose-700">{{ form.registro_profissional.errors }}</p>{% endif %}
+        </div>
+        <button class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800" type="submit">
+          Cadastrar professor
+        </button>
+      </form>
+
+      <p class="mt-4 text-center text-sm text-slate-600">
+        Já tenho conta.
+        <a class="font-semibold text-slate-900 underline-offset-4 hover:underline" href="{% url 'Site:login' %}">Entrar</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,133 @@
+{% extends "educadigital/base_educadigital.html" %}
+
+{% block title %}Quiz Matemática 8º{% endblock %}
+{% block header_title %}Matemática — 8º ano{% endblock %}
+{% block header_subtitle %}Responda as questões e finalize para ver o resultado.{% endblock %}
+
+{% block educa_content %}
+  <div class="grid gap-4">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Quiz</p>
+          <h2 class="mt-1 text-lg font-semibold text-slate-900">Matemática — 8º ano</h2>
+          <p class="mt-1 text-sm text-slate-600">Marque uma alternativa por pergunta.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" href="{% url 'educadigital:matematica' %}">
+            ← Voltar
+          </a>
+          <button id="finish-quiz-btn" class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-500" type="button">
+            Finalizar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz-container" class="grid gap-4">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-soft">
+        Carregando perguntas...
+      </div>
+    </div>
+
+    <div id="quiz-result" class="hidden rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-900 shadow-soft"></div>
+  </div>
+
+  <script>
+    let quizData = [];
+
+    fetch("/educa/api/get-quiz/?category=8Matematica")
+      .then((response) => response.json())
+      .then((data) => {
+        quizData = data.data;
+        renderQuiz(quizData);
+      })
+      .catch((error) => {
+        document.getElementById("quiz-container").innerHTML =
+          "<div class='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-rose-700 shadow-soft'>Erro ao carregar o quiz.</div>";
+        console.error(error);
+      });
+
+    function renderQuiz(questions) {
+      const container = document.getElementById("quiz-container");
+      container.innerHTML = "";
+
+      if (!questions || questions.length === 0) {
+        container.innerHTML =
+          "<div class='rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-soft'>Nenhuma pergunta encontrada.</div>";
+        return;
+      }
+
+      questions.forEach((questionObj, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "rounded-2xl border border-slate-200 bg-white p-6 shadow-soft";
+
+        let answersHtml = "";
+        questionObj.answers.forEach((answerObj, answerIndex) => {
+          answersHtml += `
+            <label class="flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-slate-50">
+              <input
+                class="mt-1 h-4 w-4 accent-indigo-600"
+                type="radio"
+                name="question-${index}"
+                value="${answerIndex}"
+              >
+              <span class="text-sm text-slate-700">${answerObj.answer}</span>
+            </label>
+          `;
+        });
+
+        questionDiv.innerHTML = `
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="text-base font-semibold text-slate-900">${index + 1}. ${questionObj.question}</h3>
+          </div>
+          <div class="mt-4 grid gap-2">${answersHtml}</div>
+          <div id="feedback-${index}" class="mt-3 text-sm"></div>
+        `;
+
+        container.appendChild(questionDiv);
+      });
+    }
+
+    document.getElementById("finish-quiz-btn").addEventListener("click", function () {
+      let totalScore = 0;
+      let totalMarks = 0;
+      let totalCorrect = 0;
+
+      quizData.forEach((questionObj, index) => {
+        totalMarks += questionObj.marks;
+
+        const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+        const feedbackDiv = document.getElementById(`feedback-${index}`);
+
+        if (!selectedOption) {
+          feedbackDiv.innerHTML = "<span class='font-semibold text-amber-700'>Você não respondeu esta pergunta.</span>";
+          return;
+        }
+
+        const selectedAnswerIndex = parseInt(selectedOption.value);
+        const selectedAnswer = questionObj.answers[selectedAnswerIndex];
+
+        if (selectedAnswer.is_correct) {
+          totalScore += questionObj.marks;
+          totalCorrect += 1;
+          feedbackDiv.innerHTML = "<span class='font-semibold text-emerald-700'>Correto</span>";
+        } else {
+          feedbackDiv.innerHTML = "<span class='font-semibold text-rose-700'>Errado</span>";
+        }
+      });
+
+      const resultEl = document.getElementById("quiz-result");
+      resultEl.classList.remove("hidden");
+      resultEl.innerHTML = `
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Resultado</p>
+        <p class="mt-1 text-base font-semibold text-slate-900">Finalizado</p>
+        <div class="mt-3 grid gap-1 text-sm text-slate-700">
+          <p><span class="font-semibold text-slate-900">Acertos:</span> ${totalCorrect} de ${quizData.length}</p>
+          <p><span class="font-semibold text-slate-900">Pontuação:</span> ${totalScore} de ${totalMarks}</p>
+        </div>
+      `;
+      resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+{% endblock %}
