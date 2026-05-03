@@ -6,68 +6,557 @@
 {% block header_subtitle %}Bem-vindo, {{ professor.nome_completo }}.{% endblock %}
 
 {% block content %}
-  <div class="grid gap-6 lg:grid-cols-3">
-    <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:chamada' %}">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Chamada</p>
-          <h2 class="mt-1 text-lg font-semibold">Marcar presença</h2>
-          <p class="mt-2 text-sm text-slate-600">Inicie uma aula e altere o status para Presente/Falta.</p>
-        </div>
-        <span class="text-slate-300 group-hover:text-slate-700">→</span>
-      </div>
-    </a>
+<style>
+.aba-content { display: none; }
+.aba-content:target { display: block; }
+.aba-btn { text-decoration: none; }
+.aba-btn:hover { color: rgb(15, 23, 42); }
+.plano-serie { display: none; }
+#aba-dashboard { display: block; }
+</style>
 
-    <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:qrcode' %}">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">QR Code</p>
-          <h2 class="mt-1 text-lg font-semibold">Check-in automático</h2>
-          <p class="mt-2 text-sm text-slate-600">Gere um QR com token curto para o aluno confirmar presença.</p>
-        </div>
-        <span class="text-slate-300 group-hover:text-slate-700">→</span>
-      </div>
-    </a>
-
-    <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:turmas' %}">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Turmas</p>
-          <h2 class="mt-1 text-lg font-semibold">Gerenciar</h2>
-          <p class="mt-2 text-sm text-slate-600">(Por enquanto) gerencie via Admin do Django.</p>
-        </div>
-        <span class="text-slate-300 group-hover:text-slate-700">→</span>
-      </div>
-    </a>
+  <!-- Navegação das Abas -->
+  <div class="mb-8 border-b border-slate-200">
+    <div class="flex gap-8">
+      <a href="#aba-dashboard" id="btn-dashboard" class="aba-btn py-4 px-1 border-b-2 border-slate-900 text-slate-900 font-semibold cursor-pointer transition">
+         Dashboard
+      </a>
+      <a href="#aba-bncc" id="btn-bncc" class="aba-btn py-4 px-1 border-b-2 border-transparent text-slate-600 font-semibold cursor-pointer transition hover:text-slate-900">
+         BNCC
+      </a>
+      <a href="#aba-plano" id="btn-plano" class="aba-btn py-4 px-1 border-b-2 border-transparent text-slate-600 font-semibold cursor-pointer transition hover:text-slate-900">
+         Plano de Ensino
+      </a>
+      <a href="#aba-metodo" id="btn-metodo" class="aba-btn py-4 px-1 border-b-2 border-transparent text-slate-600 font-semibold cursor-pointer transition hover:text-slate-900">
+         Método Educacional
+      </a>
+    </div>
   </div>
 
-  <div class="mt-8 rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
-    <div class="flex items-center justify-between">
-      <h3 class="text-base font-semibold">Suas turmas</h3>
-      <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ turmas|length }}</span>
+  <!-- ABA: DASHBOARD -->
+  <div id="aba-dashboard" class="aba-content">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:chamada' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Chamada</p>
+            <h2 class="mt-1 text-lg font-semibold">Marcar presença</h2>
+            <p class="mt-2 text-sm text-slate-600">Inicie uma aula e altere o status para Presente/Falta.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
+
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:qrcode' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">QR Code</p>
+            <h2 class="mt-1 text-lg font-semibold">Check-in automático</h2>
+            <p class="mt-2 text-sm text-slate-600">Gere um QR com token curto para o aluno confirmar presença.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
+
+      <a class="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-xl" href="{% url 'chamada:turmas' %}">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Turmas</p>
+            <h2 class="mt-1 text-lg font-semibold">Gerenciar</h2>
+            <p class="mt-2 text-sm text-slate-600">(Por enquanto) gerencie via Admin do Django.</p>
+          </div>
+          <span class="text-slate-300 group-hover:text-slate-700">→</span>
+        </div>
+      </a>
     </div>
 
-    {% if turmas %}
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {% for turma in turmas %}
-          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ turma.codigo }}</p>
-            <p class="mt-1 font-semibold">{{ turma.nome }}</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <form method="post" action="{% url 'chamada:criar_aula' turma.id %}">
-                {% csrf_token %}
-                <button class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800" type="submit">Iniciar aula</button>
-              </form>
-              <form method="post" action="{% url 'chamada:gerar_qr_nova_aula' turma.id %}">
-                {% csrf_token %}
-                <button class="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" type="submit">Gerar QR</button>
-              </form>
+    <div class="mt-8 rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold">Suas turmas</h3>
+        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ turmas|length }}</span>
+      </div>
+
+      {% if turmas %}
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {% for turma in turmas %}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ turma.codigo }}</p>
+              <p class="mt-1 font-semibold">{{ turma.nome }}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <form method="post" action="{% url 'chamada:criar_aula' turma.id %}">
+                  {% csrf_token %}
+                  <button class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800" type="submit">Iniciar aula</button>
+                </form>
+                <form method="post" action="{% url 'chamada:gerar_qr_nova_aula' turma.id %}">
+                  {% csrf_token %}
+                  <button class="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50" type="submit">Gerar QR</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mt-3 text-sm text-slate-600">Nenhuma turma cadastrada ainda.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ABA: BNCC -->
+  <div id="aba-bncc" class="aba-content">
+    <div class="space-y-6">
+      <div class="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-8 shadow-card ring-1 ring-slate-200">
+        <h2 class="text-2xl font-bold text-slate-900">Base Nacional Comum Curricular (BNCC)</h2>
+        <p class="mt-2 text-slate-600">Documento normativo que define o conjunto de aprendizagens essenciais que todos os alunos devem desenvolver ao longo da Educação Básica.</p>
+      </div>
+
+      <div class="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-8 shadow-card ring-1 ring-slate-200">
+        <h3 class="text-xl font-bold text-blue-900 mb-4">O que é a BNCC?</h3>
+        <div class="space-y-4 text-blue-800">
+          <p>A Base Nacional Comum Curricular (BNCC) é um documento de caráter normativo que define o conjunto progressivo de aprendizagens essenciais que todos os alunos devem desenvolver ao longo das etapas e modalidades da Educação Básica.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong>Caráter Obrigatório:</strong> Referência nacional para a formulação dos currículos dos sistemas e das redes escolares.</li>
+            <li><strong>Equidade:</strong> Visa garantir que todos os alunos tenham acesso a uma educação de qualidade.</li>
+            <li><strong>Progressividade:</strong> Define aprendizagens em ordem progressiva, considerando o desenvolvimento cognitivo do aluno.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: PLANO DE ENSINO -->
+  <div id="aba-plano" class="aba-content">
+    <div class="mb-6 flex gap-2 flex-wrap">
+      <input type="button" onclick="
+        document.getElementById('plano-5ano').style.display='block';
+        document.getElementById('plano-6ano').style.display='none';
+        document.getElementById('plano-7ano').style.display='none';
+        document.getElementById('plano-8ano').style.display='none';
+        document.getElementById('plano-9ano').style.display='none';
+        this.style.background='rgb(37, 99, 235)'; this.style.color='white';
+        document.getElementById('btn-6ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-6ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-7ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-7ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-8ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-8ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-9ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-9ano').style.color='rgb(71, 85, 105)';
+      " value="5º Ano" style="padding: 8px 16px; border-radius: 8px; background: rgb(37, 99, 235); color: white; font-weight: bold; cursor: pointer; border: none;">
+      
+      <input type="button" onclick="
+        document.getElementById('plano-5ano').style.display='none';
+        document.getElementById('plano-6ano').style.display='block';
+        document.getElementById('plano-7ano').style.display='none';
+        document.getElementById('plano-8ano').style.display='none';
+        document.getElementById('plano-9ano').style.display='none';
+        this.style.background='rgb(37, 99, 235)'; this.style.color='white';
+        document.getElementById('btn-5ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-5ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-7ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-7ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-8ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-8ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-9ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-9ano').style.color='rgb(71, 85, 105)';
+      " value="6º Ano" style="padding: 8px 16px; border-radius: 8px; background: rgb(226, 232, 240); color: rgb(71, 85, 105); font-weight: bold; cursor: pointer; border: none;">
+      
+      <input type="button" onclick="
+        document.getElementById('plano-5ano').style.display='none';
+        document.getElementById('plano-6ano').style.display='none';
+        document.getElementById('plano-7ano').style.display='block';
+        document.getElementById('plano-8ano').style.display='none';
+        document.getElementById('plano-9ano').style.display='none';
+        this.style.background='rgb(37, 99, 235)'; this.style.color='white';
+        document.getElementById('btn-5ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-5ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-6ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-6ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-8ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-8ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-9ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-9ano').style.color='rgb(71, 85, 105)';
+      " value="7º Ano" style="padding: 8px 16px; border-radius: 8px; background: rgb(226, 232, 240); color: rgb(71, 85, 105); font-weight: bold; cursor: pointer; border: none;">
+      
+      <input type="button" onclick="
+        document.getElementById('plano-5ano').style.display='none';
+        document.getElementById('plano-6ano').style.display='none';
+        document.getElementById('plano-7ano').style.display='none';
+        document.getElementById('plano-8ano').style.display='block';
+        document.getElementById('plano-9ano').style.display='none';
+        this.style.background='rgb(37, 99, 235)'; this.style.color='white';
+        document.getElementById('btn-5ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-5ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-6ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-6ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-7ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-7ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-9ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-9ano').style.color='rgb(71, 85, 105)';
+      " value="8º Ano" style="padding: 8px 16px; border-radius: 8px; background: rgb(226, 232, 240); color: rgb(71, 85, 105); font-weight: bold; cursor: pointer; border: none;">
+      
+      <input type="button" onclick="
+        document.getElementById('plano-5ano').style.display='none';
+        document.getElementById('plano-6ano').style.display='none';
+        document.getElementById('plano-7ano').style.display='none';
+        document.getElementById('plano-8ano').style.display='none';
+        document.getElementById('plano-9ano').style.display='block';
+        this.style.background='rgb(37, 99, 235)'; this.style.color='white';
+        document.getElementById('btn-5ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-5ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-6ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-6ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-7ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-7ano').style.color='rgb(71, 85, 105)';
+        document.getElementById('btn-8ano').style.background='rgb(226, 232, 240)'; document.getElementById('btn-8ano').style.color='rgb(71, 85, 105)';
+      " value="9º Ano" style="padding: 8px 16px; border-radius: 8px; background: rgb(226, 232, 240); color: rgb(71, 85, 105); font-weight: bold; cursor: pointer; border: none;">
+    </div>
+
+    <div id="plano-5ano" class="plano-serie space-y-6" style="display: block;">
+      <div class="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 5º Ano</h2>
+        <p class="mt-2 text-blue-100">Consolidação de leitura, escrita, operações matemáticas básicas e conceitos científicos</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Fluência, interpretação, gramática, expressão</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Leitura compartilhada, produções colaborativas, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Naturais, frações, decimais, geometria</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Problemas contextualizados, jogos, materiais</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Natureza, corpo humano, energia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Experimentação, observação, documentários</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Brasil, mundo, civilizações</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Documentos, linha do tempo, dramatizações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Espaços, mapas, paisagens</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas, observação, projetos sustentáveis</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-6ano" class="plano-serie" style="display: none;">
+      <div class="rounded-2xl bg-gradient-to-r from-green-500 to-green-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 6º Ano</h2>
+        <p class="mt-2 text-green-100">Aprofundamento em análise, números inteiros e organização dos seres vivos</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Análise crítica, gêneros textuais, gramática avançada</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de textos, produções escritas, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Inteiros, equações, geometria espacial</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Resolução de problemas, software educativo</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Ecologia, células, energia e matéria</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Laboratório, projetos de pesquisa, simulações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Antiguidade, medieval, formação do Brasil</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de fontes, mapas históricos, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Cartografia, biomas, urbanização</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Estudo de mapas, análise de imagens, trabalhos de campo</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-7ano" class="plano-serie" style="display: none;">
+      <div class="rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 7º Ano</h2>
+        <p class="mt-2 text-yellow-100">Funções da linguagem, álgebra e sistemas do corpo humano</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Funções linguagem, argumentação, literatura</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Obras literárias, publicidades, debates</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Álgebra, equações, geometria analítica</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Problemas contextualizados, software matemático</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Corpo humano, reprodução, genética</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Laboratório, experimentos, modelos 3D</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Medieval, moderna, Brasil colonial</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de fontes, seminários, dramatizações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> América, urbanização, economia global</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Mapas políticos, discussões, projetos</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-8ano" class="plano-serie" style="display: none;">
+      <div class="rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 8º Ano</h2>
+        <p class="mt-2 text-red-100">Análise de discurso avançada, álgebra aprofundada e genética</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Discurso, argumentação, literatura brasileira</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Obras completas, análise de mídia, produções</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Funções, quadráticas, geometria espacial</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Software, problemas ENEM, investigações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Química, física, biotecnologia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Experimentos, simulações, pesquisas</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Contemporânea, globalização, república</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Documentos, seminários, análise crítica</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Globalização, sustentabilidade, geopolítica</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de notícias, indicadores, debates</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="plano-9ano" class="plano-serie" style="display: none;">
+      <div class="rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Plano de Ensino - 9º Ano</h2>
+        <p class="mt-2 text-purple-100">Consolidação final com preparação para Ensino Médio</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">📖 Português</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Análise crítica, produção acadêmica, argumentação</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Artigos científicos, debates, produções textuais</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔢 Matemática</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Cálculo básico, estatística, probabilidade</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Projetos interdisciplinares, simulações</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🔬 Ciências</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Física moderna, química orgânica, ecologia</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Pesquisas científicas, feiras de ciências</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🏛️ História</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Mundo atual, Brasil contemporâneo, cidadania</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Projetos de pesquisa, debates, intervenções</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+          <h3 class="text-base font-bold text-slate-900 mb-3">🌍 Geografia</h3>
+          <p class="text-sm text-slate-700 mb-2"><strong>Objetivos:</strong> Geopolítica, economia mundial, sustentabilidade</p>
+          <p class="text-xs text-slate-600"><strong>Método:</strong> Análise de cenários, propostas de soluções</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA: MÉTODO EDUCACIONAL -->
+  <div id="aba-metodo" class="aba-content">
+    <div class="space-y-6">
+      <div class="rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 p-8 text-white shadow-card">
+        <h2 class="text-3xl font-bold">Método Educacional</h2>
+        <p class="mt-2 text-indigo-100">Abordagens pedagógicas para otimizar o processo de aprendizagem dos alunos</p>
+      </div>
+
+      <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-4">O que é o Método Educacional?</h3>
+        <p class="text-slate-700 mb-4">O método educacional refere-se ao conjunto de estratégias, técnicas e procedimentos utilizados no processo de ensino e aprendizagem. É a forma estruturada de organizar o conhecimento para que o aluno possa aprender de maneira eficaz e significativa.</p>
+        <div class="grid gap-4 md:grid-cols-2 mt-6">
+          <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
+            <p class="font-semibold text-indigo-900">✓ Baseado em Pesquisa</p>
+            <p class="text-sm text-indigo-800 mt-2">Fundamentado em teorias científicas educacionais comprovadas</p>
+          </div>
+          <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
+            <p class="font-semibold text-indigo-900">✓ Flexível e Adaptável</p>
+            <p class="text-sm text-indigo-800 mt-2">Ajusta-se ao contexto e às realidades escolares</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-6">Principais Métodos Educacionais</h3>
+        
+        <div class="space-y-6">
+          <div class="border-b border-slate-200 pb-6 last:border-b-0">
+            <h4 class="text-lg font-semibold text-slate-900 mb-3">🎓 Aprendizagem Ativa</h4>
+            <p class="text-slate-700 mb-3">Coloca o aluno no centro do processo, engajando-o na construção ativa do conhecimento através de discussões, debates e resolução de problemas práticos.</p>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="font-semibold text-blue-900 text-sm">Características:</p>
+              <ul class="text-sm text-blue-800 space-y-1 ml-4 mt-2">
+                <li>✓ Alunos como protagonistas</li>
+                <li>✓ Participação em discussões</li>
+                <li>✓ Projetos colaborativos</li>
+                <li>✓ Feedback contínuo</li>
+              </ul>
             </div>
           </div>
-        {% endfor %}
+
+          <div class="border-b border-slate-200 pb-6 last:border-b-0">
+            <h4 class="text-lg font-semibold text-slate-900 mb-3">🏗️ Construtivismo</h4>
+            <p class="text-slate-700 mb-3">Cada aluno constrói seu próprio conhecimento por meio da experiência e reflexão, baseado em conhecimentos anteriores.</p>
+            <div class="bg-green-50 p-4 rounded-lg">
+              <p class="font-semibold text-green-900 text-sm">Princípios:</p>
+              <ul class="text-sm text-green-800 space-y-1 ml-4 mt-2">
+                <li>✓ Conhecimento prévio como base</li>
+                <li>✓ Aprendizagem significativa</li>
+                <li>✓ Experiência prática</li>
+                <li>✓ Reflexão contínua</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border-b border-slate-200 pb-6 last:border-b-0">
+            <h4 class="text-lg font-semibold text-slate-900 mb-3">👥 Aprendizagem Colaborativa</h4>
+            <p class="text-slate-700 mb-3">Alunos trabalham juntos em grupos para alcançar objetivos comuns, promovendo ajuda mútua e responsabilidade coletiva.</p>
+            <div class="bg-purple-50 p-4 rounded-lg">
+              <p class="font-semibold text-purple-900 text-sm">Estratégias:</p>
+              <ul class="text-sm text-purple-800 space-y-1 ml-4 mt-2">
+                <li>✓ Trabalhos em grupos</li>
+                <li>✓ Pares tutores</li>
+                <li>✓ Projetos colaborativos</li>
+                <li>✓ Desenvolvimento socio-emocional</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border-b border-slate-200 pb-6 last:border-b-0">
+            <h4 class="text-lg font-semibold text-slate-900 mb-3">🎯 Aprendizagem Baseada em Projetos</h4>
+            <p class="text-slate-700 mb-3">Alunos investigam e resolvem problemas complexos, desenvolvendo produtos ou soluções tangíveis.</p>
+            <div class="bg-orange-50 p-4 rounded-lg">
+              <p class="font-semibold text-orange-900 text-sm">Características:</p>
+              <ul class="text-sm text-orange-800 space-y-1 ml-4 mt-2">
+                <li>✓ Problema essencial</li>
+                <li>✓ Investigação aprofundada</li>
+                <li>✓ Produto tangível</li>
+                <li>✓ Reflexão final</li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-semibold text-slate-900 mb-3">🎮 Gamificação</h4>
+            <p class="text-slate-700 mb-3">Incorpora elementos de jogos para aumentar engajamento e motivação dos alunos.</p>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+              <p class="font-semibold text-yellow-900 text-sm">Elementos:</p>
+              <ul class="text-sm text-yellow-800 space-y-1 ml-4 mt-2">
+                <li>✓ Pontos e badges</li>
+                <li>✓ Desafios progressivos</li>
+                <li>✓ Feedback imediato</li>
+                <li>✓ Narrativas envolventes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-    {% else %}
-      <p class="mt-3 text-sm text-slate-600">Nenhuma turma cadastrada ainda.</p>
-    {% endif %}
+
+      <div class="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-6">Pilares Metodológicos</h3>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="bg-gradient-to-br from-cyan-50 to-blue-50 p-5 rounded-lg border-l-4 border-cyan-500">
+            <p class="font-semibold text-cyan-900">🔍 Investigação Científica</p>
+            <p class="text-sm text-cyan-800 mt-2">Desenvolvimento de pensamento crítico através de observação e experimentação.</p>
+          </div>
+          <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">🌍 Contextualização</p>
+            <p class="text-sm text-green-800 mt-2">Conteúdos relacionados com a realidade dos alunos.</p>
+          </div>
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-5 rounded-lg border-l-4 border-rose-500">
+            <p class="font-semibold text-rose-900">🤝 Inclusão e Diversidade</p>
+            <p class="text-sm text-rose-800 mt-2">Valorização da diversidade de necessidades e estilos de aprendizagem.</p>
+          </div>
+          <div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-5 rounded-lg border-l-4 border-amber-500">
+            <p class="font-semibold text-amber-900">💡 Inovação Contínua</p>
+            <p class="text-sm text-amber-800 mt-2">Integração de tecnologia e atualização de práticas pedagógicas.</p>
+          </div>
+          <div class="bg-gradient-to-br from-violet-50 to-purple-50 p-5 rounded-lg border-l-4 border-violet-500">
+            <p class="font-semibold text-violet-900">🧠 Desenvolvimento Integral</p>
+            <p class="text-sm text-violet-800 mt-2">Foco no desenvolvimento cognitivo, emocional e social.</p>
+          </div>
+          <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-lg border-l-4 border-indigo-500">
+            <p class="font-semibold text-indigo-900">📊 Avaliação Formativa</p>
+            <p class="text-sm text-indigo-800 mt-2">Avaliação contínua para acompanhar e potencializar desenvolvimento.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-50 p-8 shadow-card ring-1 ring-slate-200">
+        <h3 class="text-xl font-bold text-indigo-900 mb-4">Processo Avaliativo Contínuo</h3>
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+            <div>
+              <p class="font-semibold text-indigo-900">Avaliação Diagnóstica</p>
+              <p class="text-sm text-indigo-800">Identificar conhecimentos prévios no início do processo.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
+            <div>
+              <p class="font-semibold text-indigo-900">Avaliação Formativa</p>
+              <p class="text-sm text-indigo-800">Monitorar o progresso durante as aulas e ajustar o ensino.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">3</div>
+            <div>
+              <p class="font-semibold text-indigo-900">Feedback Construtivo</p>
+              <p class="text-sm text-indigo-800">Orientação sobre pontos fortes e áreas de melhoria.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">4</div>
+            <div>
+              <p class="font-semibold text-indigo-900">Avaliação Somativa</p>
+              <p class="text-sm text-indigo-800">Consolidação de aprendizagens ao final de unidades ou períodos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
 {% endblock %}
+
+<script>
+function mostrarPlano(ano) {
+  alert('Clicou no ano: ' + ano);
+  
+  // Esconder todos
+  document.getElementById('plano-5ano').style.display = 'none';
+  document.getElementById('plano-6ano').style.display = 'none';
+  document.getElementById('plano-7ano').style.display = 'none';
+  document.getElementById('plano-8ano').style.display = 'none';
+  document.getElementById('plano-9ano').style.display = 'none';
+  
+  // Resetar botões
+  document.getElementById('btn-5ano').style.backgroundColor = 'rgb(226, 232, 240)';
+  document.getElementById('btn-5ano').style.color = 'rgb(71, 85, 105)';
+  document.getElementById('btn-6ano').style.backgroundColor = 'rgb(226, 232, 240)';
+  document.getElementById('btn-6ano').style.color = 'rgb(71, 85, 105)';
+  document.getElementById('btn-7ano').style.backgroundColor = 'rgb(226, 232, 240)';
+  document.getElementById('btn-7ano').style.color = 'rgb(71, 85, 105)';
+  document.getElementById('btn-8ano').style.backgroundColor = 'rgb(226, 232, 240)';
+  document.getElementById('btn-8ano').style.color = 'rgb(71, 85, 105)';
+  document.getElementById('btn-9ano').style.backgroundColor = 'rgb(226, 232, 240)';
+  document.getElementById('btn-9ano').style.color = 'rgb(71, 85, 105)';
+  
+  // Mostrar o clicado
+  document.getElementById('plano-' + ano).style.display = 'block';
+  document.getElementById('btn-' + ano).style.backgroundColor = 'rgb(37, 99, 235)';
+  document.getElementById('btn-' + ano).style.color = 'white';
+}
+</script>
+

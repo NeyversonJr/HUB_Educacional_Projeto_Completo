@@ -97,8 +97,8 @@
       quizData.forEach((questionObj, index) => {
         totalMarks += questionObj.marks;
 
-        const selectedOption = document.querySelector(\`input[name="question-\${index}"]:checked\`);
-        const feedbackDiv = document.getElementById(\`feedback-\${index}\`);
+        const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+        const feedbackDiv = document.getElementById(`feedback-${index}`);
 
         if (!selectedOption) {
           feedbackDiv.innerHTML = "<span class='font-semibold text-amber-700'>Você não respondeu esta pergunta.</span>";

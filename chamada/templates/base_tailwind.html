@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}HUB Educacional{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eef2ff",
+                100: "#e0e7ff",
+                200: "#c7d2fe",
+                300: "#a5b4fc",
+                400: "#818cf8",
+                500: "#6366f1",
+                600: "#4f46e5",
+                700: "#4338ca",
+                800: "#3730a3",
+                900: "#312e81",
+              },
+            },
+            boxShadow: {
+              card: "0 10px 30px rgba(2, 8, 23, 0.10)",
+              soft: "0 1px 2px rgba(2, 8, 23, 0.06), 0 8px 24px rgba(2, 8, 23, 0.08)",
+            },
+            borderRadius: {
+              xl: "0.9rem",
+              "2xl": "1.25rem",
+            },
+            fontFamily: {
+              sans: ["ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Arial", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <div class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100">
+      <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+          <a href="{% url 'Site:index' %}" class="flex items-center gap-3">
+            <div class="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-white shadow-soft">
+              <span class="text-sm font-extrabold tracking-tight">H</span>
+            </div>
+            <div class="leading-tight">
+              <p class="text-sm font-semibold tracking-tight text-slate-900">HUB Educacional</p>
+              <p class="text-xs text-slate-500">Aprender. Ensinar. Evoluir.</p>
+            </div>
+          </a>
+
+          <nav class="flex flex-wrap items-center justify-end gap-2">
+            <a class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" href="{% url 'Site:index' %}">Home</a>
+            <a class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" href="{% url 'educadigital:home' %}">EducaDigital</a>
+            <a class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" href="{% url 'chamada:professor' %}">Chamada</a>
+
+            <div class="mx-1 hidden h-6 w-px bg-slate-200 md:block"></div>
+
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'Site:logout' %}">
+                {% csrf_token %}
+                <button class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800" type="submit">
+                  Sair
+                </button>
+              </form>
+            {% else %}
+              <a class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-500" href="{% url 'Site:login' %}">Entrar</a>
+            {% endif %}
+          </nav>
+        </div>
+      </header>
+
+      <div class="mx-auto max-w-6xl px-4 py-8">
+        <div class="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <div class="grid gap-6 px-6 py-7 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-700">{% block header_kicker %}Sistema{% endblock %}</p>
+              <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">{% block header_title %}HUB Educacional{% endblock %}</h1>
+              <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">{% block header_subtitle %}{% endblock %}</p>
+            </div>
+            <div class="flex flex-wrap gap-2 md:justify-end">
+              {% block header_actions %}{% endblock %}
+            </div>
+          </div>
+        </div>
+
+        {% if messages %}
+          <div class="mb-6">
+            {% for message in messages %}
+              <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'error' %}border-rose-200 bg-rose-50 text-rose-800{% elif message.tags == 'success' %}border-green-200 bg-green-50 text-green-800{% else %}border-slate-200 bg-slate-50 text-slate-800{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <main>
+          {% block content %}{% endblock %}
+        </main>
+
+        <footer class="mt-10 border-t border-slate-200/70 py-8">
+          <div class="flex flex-col gap-2 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <p>© {% now "Y" %} HUB Educacional</p>
+            <p class="text-xs">Feito com Django + Tailwind (CDN)</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
